@@ -1,0 +1,8 @@
+{
+  "name": "google-url-shortener",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#master",
+    "google-apis": "PolymerLabs/google-apis#master"
+  }
+}

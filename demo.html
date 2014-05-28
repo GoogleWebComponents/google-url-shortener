@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+
+  <title>google-url-shortener Demo</title>
+
+  <script src="../platform/platform.js"></script>
+  <link rel="import" href="../polymer/polymer.html">
+  <link rel="import" href="google-url-shortener.html">
+
+</head>
+<body>
+
+  <polymer-element name="google-url-shortener-demo">
+    <template>
+      <google-url-shortener id="shortener" longUrl="{{$.longUrl.value}}"
+        on-google-url-shorten="{{updateShortUrl}}"
+        on-google-url-shorten-error="{{handleError}}">
+      </google-url-shortener>
+      <form on-submit="{{shorten}}">
+        <p>
+          <input type="url" id="longUrl" placeholder="Input URL here:">
+          <button type="button" on-click="{{shorten}}">Shorten</button>
+        </p>
+      </form>
+      <template if="{{shortUrl}}">
+        <p>
+          <strong>Short URL</strong>:
+          <a href="{{shortUrl}}" target="_blank">{{shortUrl}}</a>
+        </p>
+      </template>
+      <template if="{{error}}">
+        <p><strong>Error</strong>: {{error}}</p>
+      </template>
+    </template>
+
+    <script>
+      Polymer('google-url-shortener-demo', {
+        shortUrl: null,
+        error: null,
+
+        shorten: function(event) {
+          if (event) {
+            event.preventDefault();
+          }
+          this.error = null;
+          this.shortUrl = null;
+          this.$.shortener.shorten();
+        },
+
+        updateShortUrl: function(event) {
+          if (event) {
+            this.shortUrl = event.detail.shortUrl;
+          }
+        },
+
+        handleError: function(event) {
+          if (event) {
+            this.error = JSON.stringify(event.detail.error);
+          } else {
+            this.error = "Unknown error occurred";
+          }
+        },
+
+        ready: function() {
+          this.$.longUrl.focus();
+        }
+      });
+    </script>
+  </polymer-element>
+
+  <p>A `google-url-shortener` allows you to build this:</p>
+
+  <google-url-shortener-demo></google-url-shortener-demo>
+
+</body>
+</html>

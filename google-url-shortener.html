@@ -1,0 +1,133 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-apis/google-client-api.html">
+
+<!--
+`google-url-shortener` is a web component that shortens URLs with the Google
+URL Shortener API.
+
+##### Example
+
+    <google-url-shortener id="shortener"></google-url-shortener>
+    <button id="go">Shorten</button>
+
+    <script>
+      var shortener = document.getElementById('shortener');
+
+      document.getElementById('shortener').addEventListener(
+          'google-url-shorten',
+          function(event) {
+            console.log(event.detail.shortUrl);
+          }
+      );
+
+      document.getElementById('go').addEventListener('click', function() {
+        // Shorten the current page URL.
+        shortener.longUrl = document.URL;
+        shortener.shorten();
+      });
+    </script>
+
+@element google-url-shortener
+@status alpha
+@homepage http://googlewebcomponents.github.io/google-url-shortener
+-->
+<polymer-element name="google-url-shortener" attributes="longUrl auto">
+
+  <template>
+    <google-api-loader id="urlshortener" name="urlshortener" version="v1"
+    on-google-api-load="{{readyForAction}}"
+    on-google-api-load-error="{{apiLoadError}}">
+    </google-api-loader>
+  </template>
+
+  <script>
+
+    (function() {
+      'use strict';
+
+      // Stores whether the URL Shortener API is done loading.
+      var apiLoaded_ = false;
+
+      Polymer({
+        /**
+         * Fired when the URL gets successfully shortened.
+         *
+         * @event google-url-shorten
+         */
+
+        /**
+         * Fired if an attempt to shorten a URL results in an error.
+         *
+         * @event google-url-shorten-error
+         */
+
+        /**
+         * The URL to be shortened.
+         *
+         * @attribute longUrl
+         * @type string
+         */
+        longUrl: '',
+
+        /**
+         * If true, automatically performs the shortening request when `longUrl`
+         * changes.
+         *
+         * @attribute auto
+         * @type boolean
+         * @default false
+         */
+        auto: false,
+
+        readyForAction: function() {
+          apiLoaded_ = true;
+        },
+
+        apiLoadError: function(event) {
+          this.fire('api-error', {
+            'error': {
+              'message': 'Error loading URL Shortener API',
+              'innerError': event.detail }
+            });
+        },
+
+        longUrlChanged: function() {
+          if (this.auto) {
+            shorten();
+          }
+        },
+
+        /**
+         * Shortens the URL in `longUrl`.
+         *
+         * @method shorten
+         * @return {Object} Returns undefined.
+         */
+        shorten: function() {
+          if (apiLoaded_) {
+            if (this.longUrl) {
+              var request = this.$.urlshortener.api.url.insert(
+                  { 'resource': { 'longUrl': this.longUrl }});
+
+              request.execute(function(response) {
+                if (response && response.id) {
+                  this.fire('google-url-shorten', { shortUrl: response.id });
+                } else if (response && response.error) {
+                  this.fire('google-url-shorten-error',
+                      { 'error': response.error });
+                } else {
+                  this.fire('google-url-shorten-error',
+                      { 'error': 'Unknown error' });
+                }
+              }.bind(this));
+            }
+          }
+          return null;
+        }
+
+      });
+    })();
+
+  </script>
+
+</polymer-element>
