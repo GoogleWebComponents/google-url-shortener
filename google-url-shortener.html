@@ -2,28 +2,37 @@
 <link rel="import" href="../google-apis/google-client-api.html">
 
 <!--
-`google-url-shortener` is a web component that shortens URLs with the Google
-URL Shortener API.
+`google-url-shortener` is a web component that shortens URLs with the
+<a href="https://developers.google.com/url-shortener/">Google URL Shortener API
+</a>.
 
 ##### Example
 
     <google-url-shortener id="shortener"></google-url-shortener>
-    <button id="go">Shorten</button>
 
     <script>
       var shortener = document.getElementById('shortener');
 
-      document.getElementById('shortener').addEventListener(
-          'google-url-shorten',
-          function(event) {
-            console.log(event.detail.shortUrl);
-          }
-      );
+      shortener.addEventListener('google-url-shorten', function(event) {
+        console.log(event.detail.shortUrl);
+      });
 
-      document.getElementById('go').addEventListener('click', function() {
-        // Shorten the current page URL.
-        shortener.longUrl = document.URL;
-        shortener.shorten();
+      // Shorten the current page URL.
+      shortener.longUrl = document.URL;
+      shortener.shorten();
+    </script>
+
+##### Example using `auto` and binding.
+
+    <google-url-shortener id="shortener" longUrl="{{longUrl}}" auto>
+    </google-url-shortener>
+
+    <script>
+      var shortener = document.getElementById('shortener');
+
+      shortener.addEventListener('google-url-shorten', function(event) {
+        // This will be called automatically every time `longUrl` changes.
+        console.log(event.detail.shortUrl);
       });
     </script>
 
@@ -35,8 +44,8 @@ URL Shortener API.
 
   <template>
     <google-api-loader id="urlshortener" name="urlshortener" version="v1"
-    on-google-api-load="{{readyForAction}}"
-    on-google-api-load-error="{{apiLoadError}}">
+      on-google-api-load="{{readyForAction}}"
+      on-google-api-load-error="{{apiLoadError}}">
     </google-api-loader>
   </template>
 
@@ -48,7 +57,7 @@ URL Shortener API.
       // Stores whether the URL Shortener API is done loading.
       var apiLoaded_ = false;
 
-      Polymer({
+      Polymer('google-url-shortener', {
         /**
          * Fired when the URL gets successfully shortened.
          *
@@ -66,6 +75,7 @@ URL Shortener API.
          *
          * @attribute longUrl
          * @type string
+         * @default ''
          */
         longUrl: '',
 
@@ -87,13 +97,15 @@ URL Shortener API.
           this.fire('api-error', {
             'error': {
               'message': 'Error loading URL Shortener API',
-              'innerError': event.detail }
-            });
+              'innerError': event.detail
+            }
+          });
         },
 
         longUrlChanged: function() {
+          console.log("Changed");
           if (this.auto) {
-            shorten();
+            this.shorten();
           }
         },
 
@@ -101,7 +113,7 @@ URL Shortener API.
          * Shortens the URL in `longUrl`.
          *
          * @method shorten
-         * @return {Object} Returns undefined.
+         * @return {Object} Returns null.
          */
         shorten: function() {
           if (apiLoaded_) {
