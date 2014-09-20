@@ -1,6 +1,6 @@
 {
   "name": "google-url-shortener",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "homepage": "http://googlewebcomponents.github.io/google-url-shortener",
   "description": "Web component to shorten URLs with the Google URL Shortener API",
   "main": "google-url-shortener.html",
