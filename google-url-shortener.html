@@ -59,6 +59,12 @@
 
       Polymer('google-url-shortener', {
         /**
+        * Fired when the component is ready for shortening.
+        *
+        * @event google-url-shortener-ready
+        */
+
+        /**
          * Fired when the URL gets successfully shortened.
          *
          * @event google-url-shorten
@@ -91,6 +97,7 @@
 
         readyForAction: function() {
           apiLoaded_ = true;
+          this.fire('google-url-shortener-ready');
         },
 
         apiLoadError: function(event) {
