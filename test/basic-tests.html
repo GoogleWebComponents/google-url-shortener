@@ -1,0 +1,73 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>google-url-shortener</title>
+
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <!-- Step 1: import the element to test -->
+  <link rel="import" href="../google-url-shortener.html">
+</head>
+
+<body>
+
+  <!-- Some test shorteners. -->
+  <google-url-shortener
+    id="shortener"
+    longUrl="https://www.google.com">
+  </google-url-shortener>
+
+  <script>
+    var shortener = document.querySelector('#shortener');
+    suite('<google-url-shortener>', function() {
+      test('fires google-url-shortener-ready event', function(done) {
+        shortener.addEventListener('google-url-shortener-ready', function(event) {
+          event.target.removeEventListener(event.type, arguments.callee);
+          assert.isNotNull(event.detail);
+          done();
+        });
+      });
+      test('specified property has the correct values', function () {
+        assert.isDefined(shortener.longUrl);
+        assert.equal(shortener.longUrl, 'https://www.google.com');
+      });
+      test('fires google-url-shorten event for shorten call', function(done) {
+        shortener.addEventListener('google-url-shorten', function(event) {
+          event.target.removeEventListener(event.type, arguments.callee);
+          assert.isDefined(event.detail);
+          assert.isNotNull(event.detail);
+          assert.isDefined(event.detail.shortUrl);
+          assert.isNotNull(event.detail.shortUrl);
+          done();
+        });
+        shortener.shorten();
+      });
+      test('fires google-url-shorten-error event for bad URL', function(done) {
+        shortener.addEventListener('google-url-shorten-error', function(event) {
+          event.target.removeEventListener(event.type, arguments.callee);
+          assert.isDefined(event.detail);
+          assert.isNotNull(event.detail);
+          assert.isDefined(event.detail.error);
+          assert.isNotNull(event.detail.error);
+          done();
+        });
+        shortener.longUrl = 'invalid value...';
+        shortener.shorten();
+      });
+    });
+  </script>
+
+</body>
+</html>
