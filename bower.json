@@ -24,10 +24,10 @@
     "google"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#>=0.5.2 <1.0.0",
-    "google-apis": "GoogleWebComponents/google-apis#~0.4.3"
+    "google-apis": "GoogleWebComponents/google-apis#0.8-preview",
+    "polymer": "Polymer/polymer#0-8.preview"
   },
   "devDependencies": {
-    "web-component-tester": "Polymer/web-component-tester#^2.0.5"
+    "web-component-tester": "*"
   }
 }
