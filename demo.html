@@ -11,7 +11,7 @@
 <body>
   <p>A `google-url-shortener` allows you to build this:</p>
   <template is="x-autobind">
-    <google-url-shortener id="shortener" 
+    <google-url-shortener id="shortener"
       long-url="{{longUrl}}"
       short-url="{{shortUrl}}"
       error="{{urlError}}"
@@ -19,12 +19,12 @@
     </google-url-shortener>
     <form on-submit="shorten">
       <p>
-        <input type="url" id="longUrl" 
-          placeholder="Input URL here:" 
+        <input type="url" id="longUrl"
+          placeholder="Input URL here:"
           value="http://www.google.com/"
           size="50">
         <input type="submit" value="submit">
-      </p>      
+      </p>
       <p>
         <strong>Short URL</strong>:
         <a href="{{shortUrl}}" target="_blank">{{shortUrl}}</a>
@@ -35,8 +35,8 @@
     </form>
   </template>
   <script>
-    document.querySelector('template').shorten = function(ev) {
-      ev.preventDefault();
+    document.querySelector('template').shorten = function(e) {
+      e.preventDefault();
       this.longUrl = this.$.longUrl.value;
     };
   </script>

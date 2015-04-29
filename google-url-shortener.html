@@ -59,7 +59,7 @@
 
     Polymer({
 
-      is: 'google-url-shortener', 
+      is: 'google-url-shortener',
 
       /**
       * Fired when the component is ready for shortening.
@@ -103,12 +103,12 @@
           notify: true
         },
 
-        /** 
+        /**
          * Error when url was shortened
          * @attribute error
          * @default ''
          */
-        error:{
+        error: {
           type: String,
           value: '',
           notify: true
@@ -156,17 +156,17 @@
         if (apiLoaded_) {
           if (this.longUrl) {
             var request = this.$.urlshortener.api.url.insert(
-                { 'resource': { 'longUrl': this.longUrl }});
+                {resource: {longUrl: this.longUrl}});
 
             request.execute(function(response) {
               if (response && response.id) {
                 this.shortUrl = response.id;
                 this.error = '';
-                this.fire('google-url-shorten', { shortUrl: response.id });
+                this.fire('google-url-shorten', {shortUrl: response.id});
               } else {
                 this.error = response && response.error ? response.error.message : 'Unknown error';
-                this.fire('google-url-shorten-error', { 'error': this.error });
-              } 
+                this.fire('google-url-shorten-error', {error: this.error});
+              }
             }.bind(this));
           }
         }
