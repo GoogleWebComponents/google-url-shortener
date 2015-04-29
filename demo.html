@@ -5,73 +5,40 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>google-url-shortener Demo</title>
 
-  <script src="../webcomponentsjs/webcomponents.min.js"></script>
   <link rel="import" href="google-url-shortener.html">
 
 </head>
 <body>
-
-  <polymer-element name="google-url-shortener-demo">
-    <template>
-      <google-url-shortener id="shortener" longUrl="{{$.longUrl.value}}"
-        on-google-url-shorten="{{updateShortUrl}}"
-        on-google-url-shorten-error="{{handleError}}">
-      </google-url-shortener>
-      <form on-submit="{{shorten}}">
-        <p>
-          <input type="url" id="longUrl" placeholder="Input URL here:">
-          <button type="button" on-click="{{shorten}}">Shorten</button>
-        </p>
-      </form>
-      <template if="{{shortUrl}}">
-        <p>
-          <strong>Short URL</strong>:
-          <a href="{{shortUrl}}" target="_blank">{{shortUrl}}</a>
-        </p>
-      </template>
-      <template if="{{error}}">
-        <p><strong>Error</strong>: {{error}}</p>
-      </template>
-    </template>
-
-    <script>
-      Polymer('google-url-shortener-demo', {
-        shortUrl: null,
-        error: null,
-
-        shorten: function(event) {
-          if (event) {
-            event.preventDefault();
-          }
-          this.error = null;
-          this.shortUrl = null;
-          this.$.shortener.shorten();
-        },
-
-        updateShortUrl: function(event) {
-          if (event) {
-            this.shortUrl = event.detail.shortUrl;
-          }
-        },
-
-        handleError: function(event) {
-          if (event) {
-            this.error = JSON.stringify(event.detail.error);
-          } else {
-            this.error = "Unknown error occurred";
-          }
-        },
-
-        ready: function() {
-          this.$.longUrl.focus();
-        }
-      });
-    </script>
-  </polymer-element>
-
   <p>A `google-url-shortener` allows you to build this:</p>
-
-  <google-url-shortener-demo></google-url-shortener-demo>
-
+  <template is="x-autobind">
+    <google-url-shortener id="shortener"
+      long-url="{{longUrl}}"
+      short-url="{{shortUrl}}"
+      error="{{urlError}}"
+      auto>
+    </google-url-shortener>
+    <form on-submit="shorten">
+      <p>
+        <input type="url" id="longUrl"
+          placeholder="Input URL here:"
+          value="http://www.google.com/"
+          size="50">
+        <input type="submit" value="submit">
+      </p>
+      <p>
+        <strong>Short URL</strong>:
+        <a href="{{shortUrl}}" target="_blank">{{shortUrl}}</a>
+      </p>
+      <p>
+        <p><strong>Error: </strong><span style="color:red">{{urlError}}</span></p>
+      </p>
+    </form>
+  </template>
+  <script>
+    document.querySelector('template').shorten = function(e) {
+      e.preventDefault();
+      this.longUrl = this.$.longUrl.value;
+    };
+  </script>
 </body>
 </html>
