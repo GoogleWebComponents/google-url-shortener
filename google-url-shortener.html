@@ -36,15 +36,12 @@
       });
     </script>
 
-@element google-url-shortener
-@status alpha
-@homepage http://googlewebcomponents.github.io/google-url-shortener
 -->
 <dom-module id="google-url-shortener">
   <template>
     <google-client-loader id="urlshortener" name="urlshortener" version="v1"
-      on-google-api-load="readyForAction"
-      on-google-api-load-error="apiLoadError">
+      on-google-api-load="_readyForAction"
+      on-google-api-load-error="_apiLoadError">
     </google-api-loader>
   </template>
 </dom-module>
@@ -82,20 +79,15 @@
       properties: {
         /**
          * The URL to be shortened.
-         *
-         * @attribute longUrl
-         * @type string
-         * @default ''
          */
         longUrl: {
           type: String,
           value: '',
-          observer: 'longUrlChanged'
+          observer: '_longUrlChanged'
         },
 
         /**
          * Shortened URL
-         * @attribute shortUrl
          */
         shortUrl: {
           type: String,
@@ -105,8 +97,6 @@
 
         /**
          * Error when url was shortened
-         * @attribute error
-         * @default ''
          */
         error: {
           type: String,
@@ -116,10 +106,6 @@
         /**
          * If true, automatically performs the shortening request when `longUrl`
          * changes.
-         *
-         * @attribute auto
-         * @type boolean
-         * @default false
          */
         auto: {
           type: Boolean,
@@ -127,12 +113,12 @@
         }
       },
 
-      readyForAction: function() {
+      _readyForAction: function() {
         apiLoaded_ = true;
         this.fire('google-url-shortener-ready');
       },
 
-      apiLoadError: function(event) {
+      _apiLoadError: function(event) {
         this.fire('api-error', {
           'error': {
             'message': 'Error loading URL Shortener API',
@@ -141,16 +127,14 @@
         });
       },
 
-      longUrlChanged: function() {
+      _longUrlChanged: function() {
         if (this.auto) {
           this.shorten();
         }
       },
 
       /**
-       * Shortens the URL in `longUrl`.
-       *
-       * @method shorten
+       * Shortens the URL in `longUrl`. Use if `auto` is not set.
         */
       shorten: function() {
         if (apiLoaded_) {
